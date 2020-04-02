@@ -1,0 +1,42 @@
+{
+    "name": "CMP Money",
+    "description": "Send transactions to Money app",
+    "version": "1.0",
+    "icons": { 
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "96": "images/icon96.png",
+        "192": "images/icon192.png"
+    },
+
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "storage",
+        "tabs",
+        "<all_urls>"
+    ],
+
+    "background": {
+        "scripts": [
+            "src/background.js"
+        ]
+    },
+
+    "options_ui": {
+        "page": "src/options.html",
+        "open_in_tab": false
+    },
+
+    "commands": {
+        "add-transaction-from-page": {
+            "suggested_key": {
+                "default": "Alt+Shift+M"
+            },
+            "description": "Add Transaction From Current Page"
+        }
+    },
+
+    "manifest_version": 2
+}
+
