@@ -118,7 +118,7 @@
             } else if (context == 'page') {
                 // Special handling for gmail
                 if (tab.url.match(/mail\.google\.com/)) {
-                    code = "window.document.querySelector('table.Bs.nH.iY.bAt').innerText";
+                    code = "(window.document.querySelector('table.Bs.nH.iY.bAt') || window.document.body).innerText";
                 } else {
                     code = "window.document.body.innerText";
                 }
