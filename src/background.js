@@ -33,8 +33,8 @@
         const name = ('name' in message) ? message.name : false;
 
         // Requested to close window
-		if (name == "close_window") {
-            console.log('"close_window" message received');
+		if (name == "cmp.money.close_window") {
+            console.log('"cmp.money.close_window" message received');
             // Get active tab in current window
             chrome.tabs.query({
                 active: true,
