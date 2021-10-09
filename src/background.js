@@ -30,29 +30,11 @@
 		if (name === 'cmp.money.close_window') {
 			// Close tab that sent the message
 			if (sender.tab) {
-				chrome.tabs.remove(sender.tab);
+				chrome.tabs.remove(sender.tab.id);
 				return true;
 			}
 
 			throw new Error('Failed to close money app tab');
-
-			// Get active tab in current window
-			chrome.tabs.query(
-				{
-					active: true,
-					currentWindow: true,
-				},
-				function (tabs) {
-					if (tabs.length === 0) {
-						throw new Error(
-							'Unable to get active tab for some reason'
-						);
-					}
-
-					// Close the tab
-					chrome.tabs.remove(tabs[0].id);
-				}
-			);
 		}
 
 		// Options saved
@@ -146,8 +128,8 @@
 									api_key: API_KEY,
 								},
 								app_window: 1,
-								pageTitle,
-								pageUrl,
+								page_title: pageTitle,
+								page_url: pageUrl,
 								selection: transactionContent,
 							}),
 						})
