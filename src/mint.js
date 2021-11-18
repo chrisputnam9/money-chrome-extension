@@ -57,10 +57,11 @@ async function main() {
 		}
 	}
 
+	console.clear();
 	for ( const type in accounts ) {
-		console.log(
-			type + '\n------------------------------------------------'
-		);
+		console.log( '------------------------------------------------' );
+		console.log( type );
+		console.log( '------------------------------------------------' );
 		let output = '';
 		for ( const id in accounts[ type ] ) {
 			const account = accounts[ type ][ id ];
@@ -69,14 +70,45 @@ async function main() {
 		console.log( output );
 	}
 
-	console.log(
-		'Ready to fetch transactions - click continue in Browser window'
-	);
-	let keep_going = false;
-	while ( keep_going && confirm( 'Continue?' ) ) {
-		console.log( 'fetch...' );
+	console.log( '------------------------------------------------' );
+	console.log( 'Ready to fetch transactions. Click OK to continue' );
+	if ( ! confirm( 'Continue?' ) ) {
+		return;
 	}
 
-	console.log( 'Done!' );
+	for ( const provider of data.providers ) {
+		for ( const account of provider.providerAccounts ) {
+			console.clear();
+
+			// Get transactions from last 15 days
+			// TODO
+
+			// If no transactions, skip to next
+			// TODO
+
+			console.log( '------------------------------------------------' );
+			console.log(
+				'Transactions for ' +
+					provider.name +
+					' - ' +
+					account.name +
+					' (' +
+					account.accountNumberLast4 +
+					')'
+			);
+			console.log( '------------------------------------------------' );
+
+			// Display transactions in table format
+			// TODO
+
+			console.log( '------------------------------------------------' );
+			console.log( 'Click OK to continue' );
+			if ( ! confirm( 'Continue?' ) ) {
+				return;
+			}
+		}
+	}
+
+	console.log( '-------------------------------', 'Done!' );
 }
 main();
