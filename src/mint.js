@@ -1,18 +1,21 @@
 const intuit_apikey = window.MintConfig.browserAuthAPIKey;
 
 async function main() {
-	data = await fetch( 'https://mint.intuit.com/mas/v1/providers', {
-		headers: {
-			accept: 'application/json',
-			authorization:
-				'Intuit_APIKey intuit_apikey=' +
-				intuit_apikey +
-				', intuit_apikey_version=1.0',
-			'cache-control': 'no-cache',
-			pragma: 'no-cache',
-		},
-		method: 'GET',
-	} ).then( ( response ) => response.json() );
+	const providers_data = await fetch(
+		'https://mint.intuit.com/mas/v1/providers',
+		{
+			headers: {
+				accept: 'application/json',
+				authorization:
+					'Intuit_APIKey intuit_apikey=' +
+					intuit_apikey +
+					', intuit_apikey_version=1.0',
+				'cache-control': 'no-cache',
+				pragma: 'no-cache',
+			},
+			method: 'GET',
+		}
+	).then( ( response ) => response.json() );
 
 	const accounts = {
 		'Credit Cards': {
@@ -45,7 +48,7 @@ async function main() {
 		// everything else
 	};
 
-	for ( const provider of data.providers ) {
+	for ( const provider of providers_data.providers ) {
 		for ( const account of provider.providerAccounts ) {
 			for ( const type in accounts ) {
 				if ( account.id in accounts[ type ] ) {
@@ -76,30 +79,79 @@ async function main() {
 		return;
 	}
 
-	for ( const provider of data.providers ) {
+	for ( const provider of providers_data.providers ) {
 		for ( const account of provider.providerAccounts ) {
 			console.clear();
 
-			// Get transactions from last 15 days
-			// TODO
+			let accountId = null;
+			if ( 'domainIds' in account ) {
+				for ( const domainId of account.domainIds ) {
+					if ( domainId.domain === 'PFM' ) {
+						accountId = domainId.id;
+					}
+				}
+			}
 
-			// If no transactions, skip to next
+			// Split out end of ID
 			// TODO
+			console.log( accountId );
 
-			console.log( '------------------------------------------------' );
-			console.log(
-				'Transactions for ' +
-					provider.name +
-					' - ' +
-					account.name +
-					' (' +
-					account.accountNumberLast4 +
-					')'
-			);
-			console.log( '------------------------------------------------' );
+			if ( accountId === null ) {
+				console.log( 'No usable domain ID - needs investigation' );
+			} else {
+				// Get transactions from last 15 days
+				// TODO - DEBUG THIS
+				const transactions_data = await fetch(
+					'https://mint.intuit.com/listTransaction.xevent?accountId=' +
+						accountId,
+					{
+						headers: {
+							accept: '*/*',
+							'accept-language': 'en-US,en-GB;q=0.9,en;q=0.8',
+							adrum: 'isAjax:true',
+							'cache-control': 'no-cache',
+							pragma: 'no-cache',
+							'sec-ch-ua':
+								'"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
+							'sec-ch-ua-mobile': '?0',
+							'sec-ch-ua-platform': '"Linux"',
+							'sec-fetch-dest': 'empty',
+							'sec-fetch-mode': 'cors',
+							'sec-fetch-site': 'same-origin',
+							'x-requested-with': 'XMLHttpRequest',
+						},
+						referrer: 'https://mint.intuit.com/transaction.event',
+						referrerPolicy: 'strict-origin-when-cross-origin',
+						body: null,
+						method: 'GET',
+						mode: 'cors',
+						credentials: 'include',
+					}
+				).then( ( response ) => response.json() );
 
-			// Display transactions in table format
-			// TODO
+				// If no transactions, skip to next
+				// TODO
+
+				console.log(
+					'------------------------------------------------'
+				);
+				console.log(
+					'Transactions for ' +
+						provider.name +
+						' - ' +
+						account.name +
+						' (' +
+						account.accountNumberLast4 +
+						')'
+				);
+				console.log(
+					'------------------------------------------------'
+				);
+
+				// Display transactions in table format
+				// TODO
+				console.log( transactions_data );
+			}
 
 			console.log( '------------------------------------------------' );
 			console.log( 'Click OK to continue' );
