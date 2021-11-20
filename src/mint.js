@@ -13,7 +13,6 @@ async function main() {
 				'cache-control': 'no-cache',
 				pragma: 'no-cache',
 			},
-			method: 'GET',
 		}
 	).then( ( response ) => response.json() );
 
@@ -75,9 +74,9 @@ async function main() {
 
 	console.log( '------------------------------------------------' );
 	console.log( 'Ready to fetch transactions. Click OK to continue' );
-	if ( ! confirm( 'Continue?' ) ) {
-		return;
-	}
+	//if ( ! confirm( 'Continue?' ) ) {
+	//return;
+	//}
 
 	for ( const provider of providers_data.providers ) {
 		for ( const account of provider.providerAccounts ) {
@@ -93,41 +92,29 @@ async function main() {
 			}
 
 			// Split out end of ID
-			// TODO
-			console.log( accountId );
+			accountId = accountId.replace( /^\d+_/i, '' );
 
 			if ( accountId === null ) {
-				console.log( 'No usable domain ID - needs investigation' );
+				console.log(
+					'No usable account ID found - needs investigation'
+				);
 			} else {
-				// Get transactions from last 15 days
-				// TODO - DEBUG THIS
+				// Get transactions (most recent 100 - or as set by interface)
 				const transactions_data = await fetch(
-					'https://mint.intuit.com/listTransaction.xevent?accountId=' +
-						accountId,
+					'https://mint.intuit.com/app/getJsonData.xevent?accountId=' +
+						accountId +
+						'&filterType=&queryNew=&offset=0&comparableType=8&acctChanged=T&task=transactions%2Ctxnfilters&rnd=77&typeSort=8',
 					{
 						headers: {
-							accept: '*/*',
-							'accept-language': 'en-US,en-GB;q=0.9,en;q=0.8',
-							adrum: 'isAjax:true',
+							accept: 'application/json',
 							'cache-control': 'no-cache',
 							pragma: 'no-cache',
-							'sec-ch-ua':
-								'"Google Chrome";v="95", "Chromium";v="95", ";Not A Brand";v="99"',
-							'sec-ch-ua-mobile': '?0',
-							'sec-ch-ua-platform': '"Linux"',
-							'sec-fetch-dest': 'empty',
-							'sec-fetch-mode': 'cors',
-							'sec-fetch-site': 'same-origin',
-							'x-requested-with': 'XMLHttpRequest',
 						},
-						referrer: 'https://mint.intuit.com/transaction.event',
-						referrerPolicy: 'strict-origin-when-cross-origin',
-						body: null,
-						method: 'GET',
-						mode: 'cors',
-						credentials: 'include',
 					}
 				).then( ( response ) => response.json() );
+
+				// Process transactions - from last 30 days
+				// TODO
 
 				// If no transactions, skip to next
 				// TODO
@@ -154,6 +141,7 @@ async function main() {
 			}
 
 			console.log( '------------------------------------------------' );
+			//return;
 			console.log( 'Click OK to continue' );
 			if ( ! confirm( 'Continue?' ) ) {
 				return;
