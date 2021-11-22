@@ -1,5 +1,7 @@
 const intuit_apikey = window.MintConfig.browserAuthAPIKey;
 
+const today = new Date();
+
 async function main() {
 	const providers_data = await fetch(
 		'https://mint.intuit.com/mas/v1/providers',
@@ -114,7 +116,27 @@ async function main() {
 				).then( ( response ) => response.json() );
 
 				// Process transactions - from last 30 days
-				// TODO
+				const transactions = [];
+				for ( const transaction of transactions_data.set[ 0 ].data ) {
+					if ( ! transaction.date.match( /\d{4}/ ) ) {
+						transaction.date =
+							transaction.date + ', ' + today.getFullYear();
+					}
+
+					const date_object = Date.parse( transaction.date );
+					const elapsed = ( today - date_object ) / 86400000; // divide by milliseconds in a day
+
+					// More than 30 days ago? Skip it
+					if ( elapsed > 30 ) {
+						continue;
+					}
+
+					transactions.push( {
+						date: transaction.date,
+						amount: transaction.amount,
+						merchant: transaction.merchant,
+					} );
+				}
 
 				// If no transactions, skip to next
 				// TODO
@@ -136,12 +158,11 @@ async function main() {
 				);
 
 				// Display transactions in table format
-				// TODO
-				console.log( transactions_data );
+				console.table( transactions );
 			}
 
 			console.log( '------------------------------------------------' );
-			//return;
+			return;
 			console.log( 'Click OK to continue' );
 			if ( ! confirm( 'Continue?' ) ) {
 				return;
