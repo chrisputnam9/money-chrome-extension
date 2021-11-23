@@ -76,9 +76,9 @@ async function main() {
 
 	console.log( '------------------------------------------------' );
 	console.log( 'Ready to fetch transactions. Click OK to continue' );
-	//if ( ! confirm( 'Continue?' ) ) {
-	//return;
-	//}
+	if ( ! confirm( 'Continue?' ) ) {
+		return;
+	}
 
 	for ( const provider of providers_data.providers ) {
 		for ( const account of provider.providerAccounts ) {
@@ -118,7 +118,7 @@ async function main() {
 				// Process transactions - from last 30 days
 				const transactions = [];
 				for ( const transaction of transactions_data.set[ 0 ].data ) {
-					if ( ! transaction.date.match( /\d{4}/ ) ) {
+					if ( ! transaction.date.match( /\d{2}\/\d{2}\/\d{2}/ ) ) {
 						transaction.date =
 							transaction.date + ', ' + today.getFullYear();
 					}
@@ -133,13 +133,24 @@ async function main() {
 
 					transactions.push( {
 						date: transaction.date,
-						amount: transaction.amount,
-						merchant: transaction.merchant,
+						amount:
+							( transaction.isDebit ? '-' : '' ) +
+							transaction.amount,
+						merchant: transaction.omerchant,
+						// Might also want:
+						//  - id - for uniqueness
+						//  - merchant (prettier shorter name)
+						//  - isSpending
+						//  - isPending
+						//  - isTransfer
+						//  - category
 					} );
 				}
 
 				// If no transactions, skip to next
-				// TODO
+				if ( transactions.length === 0 ) {
+					continue;
+				}
 
 				console.log(
 					'------------------------------------------------'
@@ -162,7 +173,6 @@ async function main() {
 			}
 
 			console.log( '------------------------------------------------' );
-			return;
 			console.log( 'Click OK to continue' );
 			if ( ! confirm( 'Continue?' ) ) {
 				return;
