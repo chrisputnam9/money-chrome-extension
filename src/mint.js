@@ -3,6 +3,54 @@ const intuit_apikey = window.MintConfig.browserAuthAPIKey;
 const today = new Date();
 
 async function main() {
+	// Get bills
+	const bills_data = await fetch(
+		'https://mint.intuit.com/bps/v2/payer/bills',
+		{
+			headers: {
+				accept: 'application/json',
+				authorization:
+					'Intuit_APIKey intuit_apikey=' +
+					intuit_apikey +
+					', intuit_apikey_version=1.0',
+				'cache-control': 'no-cache',
+				pragma: 'no-cache',
+			},
+		}
+	).then( ( response ) => response.json() );
+
+	const bills = [];
+	for ( const bill of bills_data.bills ) {
+		const date_object = Date.parse( bill.statementDate );
+		const elapsed = ( today - date_object ) / 86400000; // divide by milliseconds in a day
+
+		// More than 60 days ago? Skip it
+		if ( elapsed > 60 ) {
+			continue;
+		}
+
+		bills.push( {
+			statementDate: bill.statementDate,
+			dueDate: bill.dueDate,
+			statementAmount: bill.statementAmount,
+			billStatus: bill.billStatus,
+			name: bill.providerRef.providerName,
+			number: bill.lastDigits,
+		} );
+	}
+
+	console.clear();
+	console.log( '------------------------------------------------' );
+	console.log( 'Statements / Bills' );
+	console.log( '------------------------------------------------' );
+	console.table( bills );
+	console.log( '------------------------------------------------' );
+	console.log( 'Ready to fetch balances. Click OK to continue' );
+	if ( ! confirm( 'Continue?' ) ) {
+		return;
+	}
+
+	// Now get providers with balances
 	const providers_data = await fetch(
 		'https://mint.intuit.com/mas/v1/providers',
 		{
