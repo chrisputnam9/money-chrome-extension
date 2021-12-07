@@ -33,7 +33,7 @@ async function main() {
 			statementDate: bill.statementDate,
 			dueDate: bill.dueDate,
 			statementAmount: bill.statementAmount,
-			billStatus: bill.billStatus,
+			// billStatus: bill.billStatus,
 			name: bill.providerRef.providerName,
 			number: bill.lastDigits,
 		} );
