@@ -33,7 +33,7 @@ async function main() {
 			statementDate: bill.statementDate,
 			dueDate: bill.dueDate,
 			statementAmount: bill.statementAmount,
-			// billStatus: bill.billStatus,
+			billStatus: bill.billStatus,
 			name: bill.providerRef.providerName,
 			number: bill.lastDigits,
 		} );
@@ -137,16 +137,16 @@ async function main() {
 				for ( const domainId of account.domainIds ) {
 					if ( domainId.domain === 'PFM' ) {
 						accountId = domainId.id;
+						// Split out end of ID
+						accountId = accountId.replace( /^\d+_/i, '' );
 					}
 				}
 			}
 
-			// Split out end of ID
-			accountId = accountId.replace( /^\d+_/i, '' );
-
 			if ( accountId === null ) {
 				console.log(
-					'No usable account ID found - needs investigation'
+					'No usable account ID found - needs investigation',
+					account
 				);
 			} else {
 				// Get transactions (most recent 100 - or as set by interface)
