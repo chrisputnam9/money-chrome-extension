@@ -29,14 +29,27 @@ async function main() {
 			continue;
 		}
 
-		bills.push( {
+		const name = bill.providerRef.providerName;
+		const number = bill.lastDigits;
+		const key = name + ':' + number;
+		let statementBalance = bill.statementAmount;
+
+		// Fix issue with statement balance being incorrect sometimes when actually balance is 0
+		const totalBalance =
+			bill?.billDetailsList?.[ 0 ]?.availableBalanceAmount ?? null;
+		if ( 0 === totalBalance ) {
+			statementBalance = 0;
+		}
+
+		bills[ key ] = {
 			statementDate: bill.statementDate,
 			dueDate: bill.dueDate,
-			statementAmount: bill.statementAmount,
+			statementBalance: statementBalance,
+			totalBalance: totalBalance,
 			billStatus: bill.billStatus,
-			name: bill.providerRef.providerName,
-			number: bill.lastDigits,
-		} );
+			name,
+			number,
+		};
 	}
 
 	console.clear();
@@ -44,6 +57,24 @@ async function main() {
 	console.log( 'Statements / Bills' );
 	console.log( '------------------------------------------------' );
 	console.table( bills );
+	console.log( '------------------------------------------------' );
+	console.log( 'Statement Balances' );
+	console.log( '------------------------------------------------' );
+	console.log( bills[ 'PNC Bank:1524' ].statementBalance );
+	console.log( bills[ 'USAA:40' ].statementBalance );
+	console.log( bills[ 'Chase Bank:8396' ].statementBalance );
+	console.log( bills[ 'Chase Bank:7040' ].statementBalance );
+	console.log( bills[ "Lowe's Consumer Credit Card:0011" ].statementBalance );
+	console.log( bills[ 'Target Credit Card:7509' ].statementBalance );
+	console.log( '------------------------------------------------' );
+	console.log( 'Total Balances' );
+	console.log( '------------------------------------------------' );
+	console.log( bills[ 'PNC Bank:1524' ].totalBalance );
+	console.log( bills[ 'USAA:40' ].totalBalance );
+	console.log( bills[ 'Chase Bank:8396' ].totalBalance );
+	console.log( bills[ 'Chase Bank:7040' ].totalBalance );
+	console.log( bills[ "Lowe's Consumer Credit Card:0011" ].totalBalance );
+	console.log( bills[ 'Target Credit Card:7509' ].totalBalance );
 	console.log( '------------------------------------------------' );
 	console.log( 'Ready to fetch balances. Click OK to continue' );
 	if ( ! confirm( 'Continue?' ) ) {
@@ -68,28 +99,32 @@ async function main() {
 
 	const accounts = {
 		'Credit Cards': {
-			'FDS:urn:account:fdp::accountid:6de95256-a8f1-3886-b96f-9d0ff67043a3': null,
-			'FDS:urn:account:fdp::accountid:9a3e9c80-b333-11ea-aebe-5abc7d9a808f': null,
-			'FDS:urn:account:fdp::accountid:7d30e11e-331b-30c2-9e10-9392fa56b6cf': null,
-			'FDS:urn:account:fdp::accountid:b4f6b8f1-fb71-3699-bf35-3a39fc37b9a9': null,
-			'FDS:urn:account:fdp::accountid:aec282b1-16f5-3f8e-ab0d-2905baf45953': null,
-			'FDS:urn:account:fdp::accountid:b02ae0df-56ce-397e-b07a-9377b4438457': null,
+			'FDS:urn:account:fdp::accountid:6de95256-a8f1-3886-b96f-9d0ff67043a3': null, // PNC
+			'FDS:urn:account:fdp::accountid:9a3e9c80-b333-11ea-aebe-5abc7d9a808f': null, // USAA
+			'FDS:urn:account:fdp::accountid:7d30e11e-331b-30c2-9e10-9392fa56b6cf': null, // Chase AZ
+			'FDS:urn:account:fdp::accountid:b4f6b8f1-fb71-3699-bf35-3a39fc37b9a9': null, // Chase Freedom
+			'FDS:urn:account:fdp::accountid:aec282b1-16f5-3f8e-ab0d-2905baf45953': null, // Lowes
+			'FDS:urn:account:fdp::accountid:b02ae0df-56ce-397e-b07a-9377b4438457': null, // Target
 		},
 		'Assets & Investments': {
-			'PFM:BankAccount:29095552_5729118': null,
-			'PFM:BankAccount:29095552_5729119': null,
-			'PFM:BankAccount:29095552_5729117': null,
-			'PFM:BankAccount:29095552_12708246': null,
-			'PFM:BankAccount:29095552_13974359': null,
-			'PFM:InvestmentAccount:29095552_13974360': null,
-			'PFM:InvestmentAccount:29095552_7525733': null,
-			'PFM:InvestmentAccount:29095552_12493034': null,
-			'PFM:InvestmentAccount:29095552_12433891': null,
-			'PFM:InvestmentAccount:29095552_12433895': null,
-			'PFM:InvestmentAccount:29095552_13897950': null,
-			'PFM:RealEstateAccount:29095552_7644887': null,
-			'PFM:VehicleAccount:29095552_14290319': null,
-			'PFM:VehicleAccount:29095552_14290320': null,
+			'PFM:BankAccount:29095552_5729118': null, // PNC - G
+			'PFM:BankAccount:29095552_5729119': null, // PNC - R
+			'PFM:BankAccount:29095552_5729117': null, // PNC - S
+			'PFM:BankAccount:29095552_12708246': null, // PSECU
+			'PFM:BankAccount:29095552_13974359': null, // Robinhood - C
+			'PFM:InvestmentAccount:29095552_13974360': null, // Robinhod - I
+			'PFM:InvestmentAccount:29095552_7525733': null, // Fidelity SIMPLE - C
+			'PFM:InvestmentAccount:29095552_14428637': null, // Fidelity Traditional - C
+			'PFM:InvestmentAccount:29095552_14455231': null, // Fidelity Traditional - K
+			'PFM:BankAccount:29095552_14455307': null, // Bread - S
+			'PFM:BankAccount:29095552_14455303': null, // FSA
+			'PFM:InvestmentAccount:29095552_12493034': null, // 529 - J
+			'PFM:InvestmentAccount:29095552_12433891': null, // 529 - W
+			'PFM:InvestmentAccount:29095552_12433895': null, // Vanguard
+			'PFM:InvestmentAccount:29095552_13897950': null, // Worthy
+			'PFM:RealEstateAccount:29095552_7644887': null, // Property - H
+			'PFM:VehicleAccount:29095552_14290319': null, // Property - A
+			'PFM:VehicleAccount:29095552_14290320': null, // Property - S
 		},
 	};
 
