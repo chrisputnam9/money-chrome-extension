@@ -3,6 +3,9 @@ const intuit_apikey = window.MintConfig.browserAuthAPIKey;
 const today = new Date();
 
 async function main() {
+	// Output for console used in various places
+	let output;
+
 	// Get bills
 	const bills_data = await fetch(
 		'https://mint.intuit.com/bps/v2/payer/bills',
@@ -57,24 +60,32 @@ async function main() {
 	console.log( 'Statements / Bills' );
 	console.log( '------------------------------------------------' );
 	console.table( bills );
+
 	console.log( '------------------------------------------------' );
 	console.log( 'Statement Balances' );
 	console.log( '------------------------------------------------' );
-	console.log( bills[ 'PNC Bank:1524' ].statementBalance );
-	console.log( bills[ 'USAA:40' ].statementBalance );
-	console.log( bills[ 'Chase Bank:8396' ].statementBalance );
-	console.log( bills[ 'Chase Bank:7040' ].statementBalance );
-	console.log( bills[ "Lowe's Consumer Credit Card:0011" ].statementBalance );
-	console.log( bills[ 'Target Credit Card:7509' ].statementBalance );
+	output = '';
+	output += bills[ 'PNC Bank:1524' ].statementBalance + '\n';
+	output += bills[ 'USAA:40' ].statementBalance + '\n';
+	output += bills[ 'Chase Bank:8396' ].statementBalance + '\n';
+	output += bills[ 'Chase Bank:7040' ].statementBalance + '\n';
+	output +=
+		bills[ "Lowe's Consumer Credit Card:0011" ].statementBalance + '\n';
+	output += bills[ 'Target Credit Card:7509' ].statementBalance + '\n';
+	console.log( output );
+
 	console.log( '------------------------------------------------' );
 	console.log( 'Total Balances' );
 	console.log( '------------------------------------------------' );
-	console.log( bills[ 'PNC Bank:1524' ].totalBalance );
-	console.log( bills[ 'USAA:40' ].totalBalance );
-	console.log( bills[ 'Chase Bank:8396' ].totalBalance );
-	console.log( bills[ 'Chase Bank:7040' ].totalBalance );
-	console.log( bills[ "Lowe's Consumer Credit Card:0011" ].totalBalance );
-	console.log( bills[ 'Target Credit Card:7509' ].totalBalance );
+	output = '';
+	output += bills[ 'PNC Bank:1524' ].totalBalance + '\n';
+	output += bills[ 'USAA:40' ].totalBalance + '\n';
+	output += bills[ 'Chase Bank:8396' ].totalBalance + '\n';
+	output += bills[ 'Chase Bank:7040' ].totalBalance + '\n';
+	output += bills[ "Lowe's Consumer Credit Card:0011" ].totalBalance + '\n';
+	output += bills[ 'Target Credit Card:7509' ].totalBalance + '\n';
+	console.log( output );
+
 	console.log( '------------------------------------------------' );
 	console.log( 'Ready to fetch balances. Click OK to continue' );
 	if ( ! confirm( 'Continue?' ) ) {
@@ -126,6 +137,9 @@ async function main() {
 			'PFM:VehicleAccount:29095552_14290319': null, // Property - A
 			'PFM:VehicleAccount:29095552_14290320': null, // Property - S
 		},
+		Loans: {
+			'FDS:urn:account:fdp::accountid:c173c3a1-a7a3-11ec-855e-de66a375e743': null, // GreenSky
+		},
 	};
 
 	const other_accounts = {
@@ -149,7 +163,7 @@ async function main() {
 		console.log( '------------------------------------------------' );
 		console.log( type );
 		console.log( '------------------------------------------------' );
-		let output = '';
+		output = '';
 		for ( const id in accounts[ type ] ) {
 			const account = accounts[ type ][ id ];
 			output += account.currentBalance + '\n';
