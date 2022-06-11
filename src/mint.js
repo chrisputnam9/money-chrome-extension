@@ -1,4 +1,4 @@
-const intuit_apikey = window.MintConfig.browserAuthAPIKey;
+const intuit_apikey = window.__shellInternal.appExperience.appApiKey;
 
 const today = new Date();
 
@@ -64,26 +64,27 @@ async function main() {
 	console.log( '------------------------------------------------' );
 	console.log( 'Statement Balances' );
 	console.log( '------------------------------------------------' );
+	console.log( bills );
 	output = '';
-	output += bills[ 'PNC Bank:1524' ].statementBalance + '\n';
-	output += bills[ 'USAA:40' ].statementBalance + '\n';
-	output += bills[ 'Chase Bank:8396' ].statementBalance + '\n';
-	output += bills[ 'Chase Bank:7040' ].statementBalance + '\n';
+	output += bills[ 'PNC Bank:1524' ]?.statementBalance + '\n';
+	output += bills[ 'USAA:40' ]?.statementBalance + '\n';
+	output += bills[ 'Chase Bank:8396' ]?.statementBalance + '\n';
+	output += bills[ 'Chase Bank:7040' ]?.statementBalance + '\n';
 	output +=
-		bills[ "Lowe's Consumer Credit Card:0011" ].statementBalance + '\n';
-	output += bills[ 'Target Credit Card:7509' ].statementBalance + '\n';
+		bills[ "Lowe's Consumer Credit Card:0011" ]?.statementBalance + '\n';
+	output += bills[ 'Target Credit Card:7509' ]?.statementBalance + '\n';
 	console.log( output );
 
 	console.log( '------------------------------------------------' );
 	console.log( 'Total Balances' );
 	console.log( '------------------------------------------------' );
 	output = '';
-	output += bills[ 'PNC Bank:1524' ].totalBalance + '\n';
-	output += bills[ 'USAA:40' ].totalBalance + '\n';
-	output += bills[ 'Chase Bank:8396' ].totalBalance + '\n';
-	output += bills[ 'Chase Bank:7040' ].totalBalance + '\n';
-	output += bills[ "Lowe's Consumer Credit Card:0011" ].totalBalance + '\n';
-	output += bills[ 'Target Credit Card:7509' ].totalBalance + '\n';
+	output += bills[ 'PNC Bank:1524' ]?.totalBalance + '\n';
+	output += bills[ 'USAA:40' ]?.totalBalance + '\n';
+	output += bills[ 'Chase Bank:8396' ]?.totalBalance + '\n';
+	output += bills[ 'Chase Bank:7040' ]?.totalBalance + '\n';
+	output += bills[ "Lowe's Consumer Credit Card:0011" ]?.totalBalance + '\n';
+	output += bills[ 'Target Credit Card:7509' ]?.totalBalance + '\n';
 	console.log( output );
 
 	console.log( '------------------------------------------------' );
