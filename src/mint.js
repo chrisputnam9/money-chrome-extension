@@ -28,7 +28,7 @@ async function main() {
 		const elapsed = ( today - date_object ) / 86400000; // divide by milliseconds in a day
 
 		// More than 60 days ago? Skip it
-		if ( elapsed > 60 ) {
+		if ( elapsed > 120 ) {
 			continue;
 		}
 
@@ -42,6 +42,13 @@ async function main() {
 			bill?.billDetailsList?.[ 0 ]?.availableBalanceAmount ?? null;
 		if ( 0 === totalBalance ) {
 			statementBalance = 0;
+		}
+
+		if (key in bills) {
+			const existing_date = Date.parse(bills[key].statementDate);
+			if (existing_date > date_object) {
+				continue;
+			}
 		}
 
 		bills[ key ] = {
@@ -64,7 +71,7 @@ async function main() {
 	console.log( '------------------------------------------------' );
 	console.log( 'Statement Balances' );
 	console.log( '------------------------------------------------' );
-	console.log( bills );
+	console.log(bills);
 	output = '';
 	output += bills[ 'PNC Bank:1524' ]?.statementBalance + '\n';
 	output += bills[ 'USAA:40' ]?.statementBalance + '\n';
@@ -123,6 +130,7 @@ async function main() {
 			'PFM:BankAccount:29095552_5729119': null, // PNC - R
 			'PFM:BankAccount:29095552_5729117': null, // PNC - S
 			'PFM:BankAccount:29095552_12708246': null, // PSECU
+			'PFM:BankAccount:29095552_14563651': null, // Citadel
 			'PFM:BankAccount:29095552_13974359': null, // Robinhood - C
 			'PFM:InvestmentAccount:29095552_13974360': null, // Robinhod - I
 			'PFM:InvestmentAccount:29095552_7525733': null, // Fidelity SIMPLE - C
@@ -135,11 +143,12 @@ async function main() {
 			'PFM:InvestmentAccount:29095552_12433895': null, // Vanguard
 			'PFM:InvestmentAccount:29095552_13897950': null, // Worthy
 			'PFM:RealEstateAccount:29095552_7644887': null, // Property - H
-			'PFM:VehicleAccount:29095552_14290319': null, // Property - A
+			'PFM:VehicleAccount:29095552_14563647': null, // Property - L
 			'PFM:VehicleAccount:29095552_14290320': null, // Property - S
 		},
 		Loans: {
 			'FDS:urn:account:fdp::accountid:c173c3a1-a7a3-11ec-855e-de66a375e743': null, // GreenSky
+			'PFM:LoanAccount:29095552_14563650': null, // Citadel
 		},
 	};
 
@@ -173,111 +182,10 @@ async function main() {
 	}
 
 	console.log( '------------------------------------------------' );
-	console.log( 'Ready to fetch transactions. Click OK to continue' );
-	if ( ! confirm( 'Continue?' ) ) {
-		return;
-	}
+	console.log('Use search interface for transaction review for now');
 
-	for ( const provider of providers_data.providers ) {
-		for ( const account of provider.providerAccounts ) {
-			console.clear();
+	// ----------------------------------------------------------------------------------------------
+	// See mint-transactions.js (disabled for now, broken by new Mint API)
 
-			let accountId = null;
-			if ( 'domainIds' in account ) {
-				for ( const domainId of account.domainIds ) {
-					if ( domainId.domain === 'PFM' ) {
-						accountId = domainId.id;
-						// Split out end of ID
-						accountId = accountId.replace( /^\d+_/i, '' );
-					}
-				}
-			}
-
-			if ( accountId === null ) {
-				console.log(
-					'No usable account ID found - needs investigation',
-					account
-				);
-			} else {
-				// Get transactions (most recent 100 - or as set by interface)
-				const transactions_data = await fetch(
-					'https://mint.intuit.com/app/getJsonData.xevent?accountId=' +
-						accountId +
-						'&filterType=&queryNew=&offset=0&comparableType=8&acctChanged=T&task=transactions%2Ctxnfilters&rnd=77&typeSort=8',
-					{
-						headers: {
-							accept: 'application/json',
-							'cache-control': 'no-cache',
-							pragma: 'no-cache',
-						},
-					}
-				).then( ( response ) => response.json() );
-
-				// Process transactions - from last 30 days
-				const transactions = [];
-				for ( const transaction of transactions_data.set[ 0 ].data ) {
-					if ( ! transaction.date.match( /\d{2}\/\d{2}\/\d{2}/ ) ) {
-						transaction.date =
-							transaction.date + ', ' + today.getFullYear();
-					}
-
-					const date_object = Date.parse( transaction.date );
-					const elapsed = ( today - date_object ) / 86400000; // divide by milliseconds in a day
-
-					// More than 30 days ago? Skip it
-					if ( elapsed > 30 ) {
-						continue;
-					}
-
-					transactions.push( {
-						date: transaction.date,
-						amount:
-							( transaction.isDebit ? '-' : '' ) +
-							transaction.amount,
-						merchant: transaction.omerchant,
-						// Might also want:
-						//  - id - for uniqueness
-						//  - merchant (prettier shorter name)
-						//  - isSpending
-						//  - isPending
-						//  - isTransfer
-						//  - category
-					} );
-				}
-
-				// If no transactions, skip to next
-				if ( transactions.length === 0 ) {
-					continue;
-				}
-
-				console.log(
-					'------------------------------------------------'
-				);
-				console.log(
-					'Transactions for ' +
-						provider.name +
-						' - ' +
-						account.name +
-						' (' +
-						account.accountNumberLast4 +
-						')'
-				);
-				console.log(
-					'------------------------------------------------'
-				);
-
-				// Display transactions in table format
-				console.table( transactions );
-			}
-
-			console.log( '------------------------------------------------' );
-			console.log( 'Click OK to continue' );
-			if ( ! confirm( 'Continue?' ) ) {
-				return;
-			}
-		}
-	}
-
-	console.log( '-------------------------------', 'Done!' );
 }
 main();
