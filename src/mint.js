@@ -44,9 +44,9 @@ async function main() {
 			statementBalance = 0;
 		}
 
-		if (key in bills) {
-			const existing_date = Date.parse(bills[key].statementDate);
-			if (existing_date > date_object) {
+		if ( key in bills ) {
+			const existing_date = Date.parse( bills[ key ].statementDate );
+			if ( existing_date > date_object ) {
 				continue;
 			}
 		}
@@ -71,7 +71,7 @@ async function main() {
 	console.log( '------------------------------------------------' );
 	console.log( 'Statement Balances' );
 	console.log( '------------------------------------------------' );
-	console.log(bills);
+	console.log( bills );
 	output = '';
 	output += bills[ 'PNC Bank:1524' ]?.statementBalance + '\n';
 	output += bills[ 'USAA:40' ]?.statementBalance + '\n';
@@ -118,12 +118,18 @@ async function main() {
 
 	const accounts = {
 		'Credit Cards': {
-			'FDS:urn:account:fdp::accountid:6de95256-a8f1-3886-b96f-9d0ff67043a3': null, // PNC
-			'FDS:urn:account:fdp::accountid:9a3e9c80-b333-11ea-aebe-5abc7d9a808f': null, // USAA
-			'FDS:urn:account:fdp::accountid:7d30e11e-331b-30c2-9e10-9392fa56b6cf': null, // Chase AZ
-			'FDS:urn:account:fdp::accountid:b4f6b8f1-fb71-3699-bf35-3a39fc37b9a9': null, // Chase Freedom
-			'FDS:urn:account:fdp::accountid:aec282b1-16f5-3f8e-ab0d-2905baf45953': null, // Lowes
-			'FDS:urn:account:fdp::accountid:b02ae0df-56ce-397e-b07a-9377b4438457': null, // Target
+			'FDS:urn:account:fdp::accountid:6de95256-a8f1-3886-b96f-9d0ff67043a3':
+				null, // PNC
+			'FDS:urn:account:fdp::accountid:9a3e9c80-b333-11ea-aebe-5abc7d9a808f':
+				null, // USAA
+			'FDS:urn:account:fdp::accountid:7d30e11e-331b-30c2-9e10-9392fa56b6cf':
+				null, // Chase AZ
+			'FDS:urn:account:fdp::accountid:b4f6b8f1-fb71-3699-bf35-3a39fc37b9a9':
+				null, // Chase Freedom
+			'FDS:urn:account:fdp::accountid:aec282b1-16f5-3f8e-ab0d-2905baf45953':
+				null, // Lowes
+			'FDS:urn:account:fdp::accountid:b02ae0df-56ce-397e-b07a-9377b4438457':
+				null, // Target
 		},
 		'Assets & Investments': {
 			'PFM:BankAccount:29095552_5729118': null, // PNC - G
@@ -137,7 +143,6 @@ async function main() {
 			'PFM:InvestmentAccount:29095552_14428637': null, // Fidelity Traditional - C
 			'PFM:InvestmentAccount:29095552_14455231': null, // Fidelity Traditional - K
 			'PFM:BankAccount:29095552_14455307': null, // Bread - S
-			'PFM:BankAccount:29095552_14455303': null, // FSA
 			'PFM:InvestmentAccount:29095552_12493034': null, // 529 - J
 			'PFM:InvestmentAccount:29095552_12433891': null, // 529 - W
 			'PFM:InvestmentAccount:29095552_12433895': null, // Vanguard
@@ -147,7 +152,8 @@ async function main() {
 			'PFM:VehicleAccount:29095552_14290320': null, // Property - S
 		},
 		Loans: {
-			'FDS:urn:account:fdp::accountid:c173c3a1-a7a3-11ec-855e-de66a375e743': null, // GreenSky
+			'FDS:urn:account:fdp::accountid:c173c3a1-a7a3-11ec-855e-de66a375e743':
+				null, // GreenSky
 			'PFM:LoanAccount:29095552_14563650': null, // Citadel
 		},
 	};
@@ -182,10 +188,9 @@ async function main() {
 	}
 
 	console.log( '------------------------------------------------' );
-	console.log('Use search interface for transaction review for now');
+	console.log( 'Use search interface for transaction review for now' );
 
 	// ----------------------------------------------------------------------------------------------
 	// See mint-transactions.js (disabled for now, broken by new Mint API)
-
 }
 main();
