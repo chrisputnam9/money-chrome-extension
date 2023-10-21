@@ -20,15 +20,15 @@ async function main() {
 				pragma: 'no-cache',
 			},
 		}
-	).then( ( response ) => response.json() );
+	).then((response) => response.json());
 
 	const bills = [];
-	for ( const bill of bills_data.bills ) {
-		const date_object = Date.parse( bill.statementDate );
-		const elapsed = ( today - date_object ) / 86400000; // divide by milliseconds in a day
+	for (const bill of bills_data.bills) {
+		const date_object = Date.parse(bill.statementDate);
+		const elapsed = (today - date_object) / 86400000; // divide by milliseconds in a day
 
 		// More than 60 days ago? Skip it
-		if ( elapsed > 120 ) {
+		if (elapsed > 120) {
 			continue;
 		}
 
@@ -39,19 +39,19 @@ async function main() {
 
 		// Fix issue with statement balance being incorrect sometimes when actually balance is 0
 		const totalBalance =
-			bill?.billDetailsList?.[ 0 ]?.availableBalanceAmount ?? null;
-		if ( 0 === totalBalance ) {
+			bill?.billDetailsList?.[0]?.availableBalanceAmount ?? null;
+		if (0 === totalBalance) {
 			statementBalance = 0;
 		}
 
-		if ( key in bills ) {
-			const existing_date = Date.parse( bills[ key ].statementDate );
-			if ( existing_date > date_object ) {
+		if (key in bills) {
+			const existing_date = Date.parse(bills[key].statementDate);
+			if (existing_date > date_object) {
 				continue;
 			}
 		}
 
-		bills[ key ] = {
+		bills[key] = {
 			statementDate: bill.statementDate,
 			dueDate: bill.dueDate,
 			statementBalance: statementBalance,
@@ -63,40 +63,40 @@ async function main() {
 	}
 
 	console.clear();
-	console.log( '------------------------------------------------' );
-	console.log( 'Statements / Bills' );
-	console.log( '------------------------------------------------' );
-	console.table( bills );
+	console.log('------------------------------------------------');
+	console.log('Statements / Bills');
+	console.log('------------------------------------------------');
+	console.table(bills);
 
-	console.log( '------------------------------------------------' );
-	console.log( 'Statement Balances' );
-	console.log( '------------------------------------------------' );
-	console.log( bills );
+	console.log('------------------------------------------------');
+	console.log('Statement Balances');
+	console.log('------------------------------------------------');
+	console.log(bills);
 	output = '';
-	output += bills[ 'PNC Bank:1524' ]?.statementBalance + '\n';
-	output += bills[ 'USAA:40' ]?.statementBalance + '\n';
-	output += bills[ 'Chase Bank:8396' ]?.statementBalance + '\n';
-	output += bills[ 'Chase Bank:7040' ]?.statementBalance + '\n';
+	output += bills['PNC Bank:1524']?.statementBalance + '\n';
+	output += bills['USAA:640']?.statementBalance + '\n';
+	output += bills['Chase Bank:8396']?.statementBalance + '\n';
+	output += bills['Chase Bank:7040']?.statementBalance + '\n';
 	output +=
-		bills[ "Lowe's Consumer Credit Card:0011" ]?.statementBalance + '\n';
-	output += bills[ 'Target Credit Card:7509' ]?.statementBalance + '\n';
-	console.log( output );
+		bills["Lowe's Consumer Credit Card:0011"]?.statementBalance + '\n';
+	output += bills['Target Credit Card:7509']?.statementBalance + '\n';
+	console.log(output);
 
-	console.log( '------------------------------------------------' );
-	console.log( 'Total Balances' );
-	console.log( '------------------------------------------------' );
+	console.log('------------------------------------------------');
+	console.log('Total Balances');
+	console.log('------------------------------------------------');
 	output = '';
-	output += bills[ 'PNC Bank:1524' ]?.totalBalance + '\n';
-	output += bills[ 'USAA:40' ]?.totalBalance + '\n';
-	output += bills[ 'Chase Bank:8396' ]?.totalBalance + '\n';
-	output += bills[ 'Chase Bank:7040' ]?.totalBalance + '\n';
-	output += bills[ "Lowe's Consumer Credit Card:0011" ]?.totalBalance + '\n';
-	output += bills[ 'Target Credit Card:7509' ]?.totalBalance + '\n';
-	console.log( output );
+	output += bills['PNC Bank:1524']?.totalBalance + '\n';
+	output += bills['USAA:640']?.totalBalance + '\n';
+	output += bills['Chase Bank:8396']?.totalBalance + '\n';
+	output += bills['Chase Bank:7040']?.totalBalance + '\n';
+	output += bills["Lowe's Consumer Credit Card:0011"]?.totalBalance + '\n';
+	output += bills['Target Credit Card:7509']?.totalBalance + '\n';
+	console.log(output);
 
-	console.log( '------------------------------------------------' );
-	console.log( 'Ready to fetch balances. Click OK to continue' );
-	if ( ! confirm( 'Continue?' ) ) {
+	console.log('------------------------------------------------');
+	console.log('Ready to fetch balances. Click OK to continue');
+	if (!confirm('Continue?')) {
 		return;
 	}
 
@@ -114,7 +114,7 @@ async function main() {
 				pragma: 'no-cache',
 			},
 		}
-	).then( ( response ) => response.json() );
+	).then((response) => response.json());
 
 	const accounts = {
 		'Credit Cards': {
@@ -135,18 +135,19 @@ async function main() {
 			'PFM:BankAccount:29095552_5729118': null, // PNC - G
 			'PFM:BankAccount:29095552_5729119': null, // PNC - R
 			'PFM:BankAccount:29095552_5729117': null, // PNC - S
-			'PFM:BankAccount:29095552_12708246': null, // PSECU
-			'PFM:BankAccount:29095552_14563651': null, // Citadel
-			'PFM:BankAccount:29095552_13974359': null, // Robinhood - C
-			'PFM:InvestmentAccount:29095552_13974360': null, // Robinhod - I
-			'PFM:InvestmentAccount:29095552_7525733': null, // Fidelity SIMPLE - C
+			//'PFM:BankAccount:29095552_12708246': null, // PSECU
+			// 'PFM:BankAccount:29095552_14563651': null, // Citadel
+			// 'PFM:BankAccount:29095552_13974359': null, // Robinhood - C
+			//'PFM:InvestmentAccount:29095552_13974360': null, // Robinhod - I
+			//'PFM:InvestmentAccount:29095552_7525733': null, // Fidelity SIMPLE - C
+			'PFM:InvestmentAccount:29095552_15040424': null, // Fidelity Individual TOD
 			'PFM:InvestmentAccount:29095552_14428637': null, // Fidelity Traditional - C
 			'PFM:InvestmentAccount:29095552_14455231': null, // Fidelity Traditional - K
 			'PFM:BankAccount:29095552_14455307': null, // Bread - S
 			'PFM:InvestmentAccount:29095552_12493034': null, // 529 - J
 			'PFM:InvestmentAccount:29095552_12433891': null, // 529 - W
-			'PFM:InvestmentAccount:29095552_12433895': null, // Vanguard
-			'PFM:InvestmentAccount:29095552_13897950': null, // Worthy
+			'PFM:InvestmentAccount:29095552_15049948': null, // Vanguard
+			// 'PFM:InvestmentAccount:29095552_13897950': null, // Worthy
 			'PFM:RealEstateAccount:29095552_7644887': null, // Property - H
 			'PFM:VehicleAccount:29095552_14563647': null, // Property - L
 			'PFM:VehicleAccount:29095552_14290320': null, // Property - S
@@ -154,7 +155,7 @@ async function main() {
 		Loans: {
 			'FDS:urn:account:fdp::accountid:c173c3a1-a7a3-11ec-855e-de66a375e743':
 				null, // GreenSky
-			'PFM:LoanAccount:29095552_14563650': null, // Citadel
+			// 'PFM:LoanAccount:29095552_14563650': null, // Citadel
 		},
 	};
 
@@ -162,33 +163,37 @@ async function main() {
 		// everything else
 	};
 
-	for ( const provider of providers_data.providers ) {
-		for ( const account of provider.providerAccounts ) {
-			for ( const type in accounts ) {
-				if ( account.id in accounts[ type ] ) {
-					accounts[ type ][ account.id ] = account;
+	for (const provider of providers_data.providers) {
+		for (const account of provider.providerAccounts) {
+			// console.log(account);
+			for (const type in accounts) {
+				if (account.id in accounts[type]) {
+					accounts[type][account.id] = account;
 				} else {
-					other_accounts[ account.id ] = account;
+					other_accounts[account.id] = account;
 				}
 			}
 		}
 	}
 
 	console.clear();
-	for ( const type in accounts ) {
-		console.log( '------------------------------------------------' );
-		console.log( type );
-		console.log( '------------------------------------------------' );
+	for (const type in accounts) {
+		console.log('------------------------------------------------');
+		console.log(type);
+		console.log('------------------------------------------------');
 		output = '';
-		for ( const id in accounts[ type ] ) {
-			const account = accounts[ type ][ id ];
+		for (const id in accounts[type]) {
+			const account = accounts[type][id];
 			output += account.currentBalance + '\n';
 		}
-		console.log( output );
+		console.log(output);
 	}
 
-	console.log( '------------------------------------------------' );
-	console.log( 'Use search interface for transaction review for now' );
+	console.log('------------------------------------------------');
+	console.log('Use search interface for transaction review for now');
+
+	// For debugging and when IDs change
+	//console.log(other_accounts);
 
 	// ----------------------------------------------------------------------------------------------
 	// See mint-transactions.js (disabled for now, broken by new Mint API)
