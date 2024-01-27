@@ -140,9 +140,9 @@ async function main() {
 			// 'PFM:BankAccount:29095552_13974359': null, // Robinhood - C
 			//'PFM:InvestmentAccount:29095552_13974360': null, // Robinhod - I
 			//'PFM:InvestmentAccount:29095552_7525733': null, // Fidelity SIMPLE - C
-			'PFM:InvestmentAccount:29095552_15040424': null, // Fidelity Individual TOD
-			'PFM:InvestmentAccount:29095552_14428637': null, // Fidelity Traditional - C
-			'PFM:InvestmentAccount:29095552_14455231': null, // Fidelity Traditional - K
+			'PFM:InvestmentAccount:29095552_15145854': null, // Fidelity Individual TOD
+			'PFM:InvestmentAccount:29095552_15145851': null, // Fidelity Traditional - C
+			'PFM:InvestmentAccount:29095552_15145852': null, // Fidelity Traditional - K
 			'PFM:BankAccount:29095552_14455307': null, // Bread - S
 			'PFM:InvestmentAccount:29095552_12493034': null, // 529 - J
 			'PFM:InvestmentAccount:29095552_12433891': null, // 529 - W
@@ -193,7 +193,7 @@ async function main() {
 	console.log('Use search interface for transaction review for now');
 
 	// For debugging and when IDs change
-	//console.log(other_accounts);
+	console.log(other_accounts);
 
 	// ----------------------------------------------------------------------------------------------
 	// See mint-transactions.js (disabled for now, broken by new Mint API)
