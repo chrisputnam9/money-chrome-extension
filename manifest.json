@@ -1,7 +1,7 @@
 {
 	"name": "CMP Money",
 	"description": "Send transactions to Money app",
-	"version": "1.3.1",
+	"version": "1.4.0",
 	"icons": {
 		"16": "images/icon16.png",
 		"32": "images/icon32.png",
@@ -9,13 +9,9 @@
 		"192": "images/icon192.png"
 	},
 
-	"permissions": [
-		"activeTab",
-		"contextMenus",
-		"storage",
-		"tabs",
-		"<all_urls>"
-	],
+	"permissions": ["activeTab", "contextMenus", "storage", "tabs"],
+
+	"host_permissions": ["*://*/*"],
 
 	"background": {
 		"scripts": ["src/background.js"]
@@ -35,5 +31,5 @@
 		}
 	},
 
-	"manifest_version": 2
+	"manifest_version": 3
 }
