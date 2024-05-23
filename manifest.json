@@ -14,7 +14,7 @@
 	"host_permissions": ["*://*/*"],
 
 	"background": {
-		"service_worker": "src/background.js"
+		"service_worker": "src/service_worker.js"
 	},
 
 	"options_ui": {
