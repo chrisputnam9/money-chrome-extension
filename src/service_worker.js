@@ -17,8 +17,9 @@
 
 		// At this point, we know a URL has loaded which matches our app URL
 		//  - So we now want to inject our content script
-		chrome.tabs.executeScript(tabId, {
-			file: "src/content.js",
+		chrome.scripting.executeScript({
+			target: { tabId },
+			files: ["src/content.js"],
 		});
 	});
 
@@ -96,7 +97,7 @@
 				let code;
 
 				if (context === "selection") {
-					code = "window.getSelection().toString()";
+					code = () => window.getSelection().toString();
 				} else if (context === "page") {
 					// Special handling for gmail
 					if (tab.url.match(/mail\.google\.com/)) {
@@ -109,13 +110,14 @@
 					}
 				}
 
-				chrome.scripting.executeScript({
-					injection: {
+				chrome.scripting.executeScript(
+					{
 						target: { tabId: tab.id },
 						func: code,
 					},
-					callback: function (results) {
-						const transactionContent = results[0];
+					function (results) {
+						const transactionContent =
+							results[0]?.result || "ERROR: No content found";
 
 						fetch(URL + "/transaction/text?ajax=1", {
 							method: "POST",
@@ -155,8 +157,8 @@
 									throw new Error(response);
 								}
 							});
-					},
-				});
+					}
+				);
 			}
 		);
 	} // End addTransaction

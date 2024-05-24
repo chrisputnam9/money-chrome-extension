@@ -9,7 +9,13 @@
 		"192": "images/icon192.png"
 	},
 
-	"permissions": ["activeTab", "contextMenus", "storage", "tabs"],
+	"permissions": [
+		"activeTab",
+		"contextMenus",
+		"scripting",
+		"storage",
+		"tabs"
+	],
 
 	"host_permissions": ["*://*/*"],
 
